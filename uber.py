@@ -8,15 +8,16 @@ from kalliope.core.NeuronModule import NeuronModule, InvalidParameterException
 logging.basicConfig()
 logger = logging.getLogger("kalliope")
 
-class Uber (NeuronModule):
+
+class Uber(NeuronModule):
     def __init__(self, **kwargs):
         super(Uber, self).__init__(**kwargs)
 
         # Get parameters form the neuron
         self.configuration = {
-            'uber_api_key': kwargs.get('uber_api_key', None), 
-            'gmaps_api_key': kwargs.get('gmaps_api_key', None), 
-            'drive_mode': kwargs.get('drive_mode', 'uberX'), 
+            'uber_api_key': kwargs.get('uber_api_key', None),
+            'yandex_api_key': kwargs.get('yandex_api_key', None),
+            'drive_mode': kwargs.get('drive_mode', 'uberX'),
             'start_latitude': kwargs.get('start_latitude', None),
             'start_longitude': kwargs.get('start_longitude', None),
             'start_address': kwargs.get('start_address', None),
@@ -50,7 +51,6 @@ class Uber (NeuronModule):
                     message['driving_mode'] = t['display_name']
                     message['time_to_get_driver'] = t['estimate'] / 60
 
-
             if self.configuration['end_address']:
                 # Get from address geocoding
                 address = self._get_address(self.configuration['end_address'])
@@ -67,7 +67,6 @@ class Uber (NeuronModule):
 
                 estimate = response.json.get('prices')
 
-
                 # Get price estimates and time estimates
                 for e in estimate:
                     if e['display_name'] == self.configuration['drive_mode']:
@@ -81,21 +80,20 @@ class Uber (NeuronModule):
 
         self.say(message)
 
-
     def _get_address(self, address):
-        # Geocoding gmaps api.
-        import googlemaps
-
-        gmaps = googlemaps.Client(key=self.configuration['gmaps_api_key'])
+        # Geocoding yandex maps api.
+        import requests
 
         # Geocoding an address
-        geocode_result = gmaps.geocode(address)
-    
+        url = 'https://geocode-maps.yandex.ru/1.x/?geocode=' + address + '&format=json&lang=ru'
+        if self.configuration['yandex_api_key']:
+            url += '&apikey=' + self.configuration['yandex_api_key']
+        geocode_result = requests.get(url=url).json()
+        unlocked = geocode_result['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['Point']['pos']
         return {
-            'latitude': geocode_result[0]['geometry']['location']['lat'], 
-            'longitude': geocode_result[0]['geometry']['location']['lng']
+            'latitude': unlocked.split(' ')[0],
+            'longitude': unlocked.split(' ')[1]
         }
-
 
     def _is_parameters_ok(self):
         """
@@ -107,13 +105,7 @@ class Uber (NeuronModule):
             raise InvalidParameterException("Uber neuronrequire an Uber API key")
 
         if self.configuration['start_address'] is None \
-            and (self.configuration['start_longitude'] is None or self.configuration['start_latitude'] is None):
+                and (self.configuration['start_longitude'] is None or self.configuration['start_latitude'] is None):
             raise InvalidParameterException("Missing start_address or start longitude and latitude")
 
-        if (self.configuration['start_address'] or self.configuration['end_address']) \
-            and self.configuration['gmaps_api_key'] is None:
-            raise InvalidParameterException('To transform start or end address into longitute and latitude, a gmaps API key is required')
-
-
         return True
-

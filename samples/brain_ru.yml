@@ -1,0 +1,22 @@
+---
+  - name: "Uber-time-estimate"
+    signals:
+      - order: "Сколько ждать водителя убер"
+    neurons:
+      - uber:
+          uber_api_key: "***********************"
+          start_longitude: "***"
+          start_latitude: "****"
+          driving_mode: "uberX"
+          say_template: "Водитель {{driving_mode}} может прибыть в течение {{ time_to_get_driver }} минут"
+
+  - name: "Uber-time-and-price-by-addresses"
+    signals:
+      - order: "Сколько ехать до {{end_address}}"
+    neurons:
+      - uber:
+          uber_api_key: "***********************"
+          start_address: "*********"
+          driving_mode: "uberX"
+          say_template: "Поездка займет примерно {{ride.duration}} и будет стоить от {{ride.low_estimate}} до {{ride.high_estimate}}. Водитель {{driving_mode}} может прибыть в течение {{ time_to_get_driver }} минут"
+          end_address: "{{end_address}}"

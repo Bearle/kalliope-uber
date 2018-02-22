@@ -1,11 +1,11 @@
-name: "uber"
+name: "uber-yandexmaps"
 type: "neuron"
-author: "Bacardi55"
+author: "Bearle"
 
 kalliope_supported_version:
     - 0.5
 
 tags:
-- "google maps"
+- "yandex maps"
 - "uber"
 - "transportation"

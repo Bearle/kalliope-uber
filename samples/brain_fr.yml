@@ -16,7 +16,6 @@
     neurons:
       - uber:
           uber_api_key: "***********************"
-          gmaps_api_key: "**********************"
           start_address: "*********"
           driving_mode: "uberX"
           say_template: "Le trajet prendra {{ride.duration}} minutes et coutera entre {{ride.low_estimate}} et {{ride.high_estimate}} Un chauffeur {{driving_mode}} peut arriver d'ici {{ time_to_get_driver }} minutes."
