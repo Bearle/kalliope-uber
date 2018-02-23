@@ -1,6 +1,6 @@
-# kalliope-uber
+# kalliope-uber-yandex-maps
 
-A neuron to leverage Uber API
+A neuron to leverage Uber API - forked from https://github.com/bacardi55/kalliope-uber
 
 ## Synopsis
 
@@ -9,27 +9,34 @@ Use Uber API to:
 * Get the time needed for a driver to arrive at your starting address
 * Get the price and duration of a ride from starting address to end address
 
-You need to enable [uber API](https://developer.uber.com/dashboard) for this. More information [here](https://developer.uber.com/docs/riders/introduction).
+You need to enable [uber API](https://developer.uber.com/dashboard) for this. 
+More information [here](https://developer.uber.com/docs/riders/introduction).
 
 This neuron only leverage the server token and not a end user oauth2 connection per user.
 
-This is due to the limited use case available by this neuron. User **can't** book a ride from this neuron. I don't intend to develop this as I don't want to automate Uber reservation (i found it a bit dangerous imo :)). But if anyone want ot add it, i'm happy to look at pull requests :).
+This is due to the limited use case available by this neuron. 
+User **can't** book a ride from this neuron. 
+I don't intend to develop this as I don't want to automate Uber reservation (i found it a bit dangerous imo :)).
+ But if anyone want ot add it, i'm happy to look at pull requests :).
 
 
 ## Installation
 
 ```
-kalliope install --git-url https://github.com/bacardi55/kalliope-uber.git
+kalliope install --git-url https://github.com/Bearle/kalliope-uber-yandex-maps.git
 ```
 
-This will install [uber-riders](https://github.com/uber/rides-python-sdk) python library **and** [google maps python lib](https://github.com/googlemaps/google-maps-services-python). The google maps API is only needed to transform address into geolocation data (longitude/latitude). If you provide longitude / latitude data instead of address, gmaps lib won't get loaded and won't be used. Please read next section for more information
+This will install [uber-riders](https://github.com/uber/rides-python-sdk) python library.
+This also uses Yandex Maps API, which is only needed to transform address into geolocation data (longitude/latitude). 
+If you provide longitude / latitude data instead of address, we won't use Yandex maps. Please read next section for more information.
+I
 
 ## Options
 
 | parameter       | required | default | choices | comment                                                              |
 |-----------------|----------|---------|---------|----------------------------------------------------------------------|
 | uber_api_key    | yes      |         | string  | The api key to use uber API. See below.                              |
-| gmaps_api_key   | no       |         | string  | The api key to use googlemaps API. See below.                        |
+| yandex_api_key  | no       |         | string  | The api key to use yandex maps API. See below.                       |
 | drive_mode	  | yes      | uberX   | string  | The drive mode: uberX, uberBlack, pool', ... [Complete list here](https://developer.uber.com/docs/riders/references/api/v1.2/products-get)  |
 | start_latitude  | no       |         | string  | The latitude of the start / origin address                           |
 | start_longitude | no       |         | string  | The longitude of the start / origin address                          |
@@ -41,11 +48,10 @@ This will install [uber-riders](https://github.com/uber/rides-python-sdk) python
 
 **Additional notes**:
 
-* If start_address is given, Gmaps will be used to get geolocation data and will replace the given start_{longitude,latitude} if any
-* If end_address is given, Gmaps will be used to get geolocation data and will replace the given end_{longitude,latitude} if any
-* If either start_address or end_address is given, gmaps_api_key is mandatory.
-* If you want to use the gmaps geolocation api, you need to enable the [Google Maps geolocation API](https://developers.google.com/maps/documentation/geocoding/intro)
+* If start_address is given, Yandex Maps will be used to get geolocation data and will replace the given start_{longitude,latitude} if any
+* If end_address is given, Yandex maps will be used to get geolocation data and will replace the given end_{longitude,latitude} if any
 
+* Yandex Maps API key isn't required if you have than 25.000 calls/day, but can be used if you have more.
 
 ## Return Values
 
@@ -92,7 +98,6 @@ Get the estimated time to get a ```driving_mode``` based on a text address
           message: "Calculating"
       - uber:
           uber_api_key: "***********************"
-          gmaps_api_key: "**********************"
           start_address: "*********"
           driving_mode: "uberX"
           say_template: "A {{driving_mode}} driver can be there in {{ time_to_get_driver }} minutes"
@@ -128,7 +133,6 @@ Get the estimated time to get a ```driving_mode```, the price and the ride durat
           message: "Calculating"
       - uber:
           uber_api_key: "***********************"
-          gmaps_api_key: "**********************"
           start_address: "*********"
           driving_mode: "uberX"
           say_template: "A {{driving_mode}} driver can be there in {{ time_to_get_driver }} minutes. Traject will take about {{ duration }} and would cost {{ estimate }}"
@@ -147,7 +151,6 @@ Get the estimated time to get a ```driving_mode```, the price and the ride durat
           message: "Calculating"
       - uber:
           uber_api_key: "***********************"
-          gmaps_api_key: "**********************"
           driving_mode: "uberX"
           say_template: "A {{driving_mode}} driver can be there in {{ time_to_get_driver }} minutes. Traject will take about {{ duration }} and would cost {{ estimate }}"
           start_address: "{{start_address}}"
@@ -155,8 +158,8 @@ Get the estimated time to get a ```driving_mode```, the price and the ride durat
 ```
 
 
-see more example in the [sample directory](https://github.com/bacardi55/kalliope-uber/blob/master/samples/)
+see more example in the [sample directory](https://github.com/Bearle/kalliope-uber-yandex-maps/tree/master/samples)
 
-
-* [my posts about kalliope](http://bacardi55.org/en/term/kalliope)
+Guy who created the original [kalliope-uber](https://github.com/bacardi55/kalliope-uber) posts stuff about kalliope
+* [bacardi55's about kalliope](https://bacardi55.org/kalliope.html)
 
